@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie-edge">
+        <!-- <link rel="stylesheet" href="./css/style.css"> -->
+        <title>Ropsten - MinimalDice DAPP</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
+        <script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
+        <link rel="stylesheet" href="./css/main.css">
+
+    </head>
+    <body>
+        <section class="hero is-dark is-fullheight">
+            <div class="container has-text-centered" style="">
+
+                <div id="notification-box"></div>
+
+                <div class="card-container">
+                    <div class="card" id="cardDiv">
+                        <div class="card-front">
+                            <div class="box">
+                                <p><strong>Play</strong></p>
+                                <p>Availabe Balance <span id="accountBalancePlay">0.00</span> ETH <button class="button is-small is-dark is-outlined" onclick="loadAccount();"><span class="icon"><i class="fa fa-sync-alt"></i></span></button></p>
+                                <div class="buttons has-addons is-centered">
+                                    <span class="button is-success is-small" onclick="toggleModal(1);">Deposit</span>
+                                    <span class="button is-danger is-small" onclick="toggleModal(2);">Withdraw</span>
+                                </div>
+
+                                <div class="field has-addons has-addons-centered">
+                                    <div class="control">
+                                        <input id="betInput" class="input is-dark is-medium" placeholder="Bet Amount">
+                                    </div>
+                                    <div class="control">
+                                        <span onclick="bet();" id="betButton" class="button is-dark is-medium">Bet</span>
+                                    </div>
+                                </div>
+
+                                <button class="button is-text is-dark is-outlined" id="flip-card-btn-turn-to-back" onclick="toggleCard()">
+                                    <span class="icon">
+                                        <i class="fa fa-share fa-flip-horizontal"></i>
+                                    </span>
+                                    <span>Account</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <div class="box">
+                                <p><strong>Account</strong></p>
+                                <button class="button is-small is-dark is-outlined" onclick="loadAccount();"><span>Refresh Account </span><span class="icon"> <i class="fa fa-sync-alt"></i></span></button>
+                                <p>Wallet Address <span id="walletAddress">0x000ooo...LoAdInG</span></p>
+                                <p>Availabe Balance <span id="accountBalance">0.00</span> ETH</p>
+                                <p>Wallet Balance <span id="walletBalance">0.00</span> ETH</p>
+                                <div class="buttons has-addons is-centered">
+                                    <span class="button is-success is-small" onclick="toggleModal(1);">Deposit</span>
+                                    <span class="button is-danger is-small" onclick="toggleModal(2);">Withdraw</span>
+                                </div>
+                                <button class="button is-text is-dark is-outlined" id="flip-card-btn-turn-to-front" onclick="toggleCard()">
+                                    <span>Play</span>
+                                    <span class="icon">
+                                        <i class="fa fa-share"></i>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal" id="depositModal">
+                <div class="modal-background"  onclick="toggleModal(1);"></div>
+                <div class="modal-content">
+                    <div class="box">
+                        <div class="buttons has-addons is-centered">
+                            <span class="button is-dark is-medium">Deposit</span>
+                            <span class="button is-dark is-medium is-outlined" onclick="toggleModal(2);">Withdraw</span>
+                        </div>
+                        <p>Availabe Balance <span id="accountBalanceDeposit">0.00</span> ETH</p>
+                        <p>Wallet Balance <span id="walletBalanceDeposit">0.00</span> ETH</p>
+                        <br>
+                        <div class="field has-addons has-addons-centered">
+                            <div class="control">
+                                <input id="depositInput" class="input is-dark is-medium" placeholder="Amount To Deposit">
+                            </div>
+                            <div class="control">
+                                <span onclick="deposit();" id="depositButton" class="button is-dark is-medium">Deposit</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="modal-close is-large" aria-label="close" onclick="toggleModal(1);"></button>
+            </div>
+
+            <div class="modal" id="withdrawModal">
+                <div class="modal-background"  onclick="toggleModal(2);"></div>
+                <div class="modal-content">
+                    <div class="box">
+                        <div class="buttons has-addons is-centered">
+                            <span class="button is-dark is-medium is-outlined" onclick="toggleModal(1);">Deposit</span>
+                            <span class="button is-dark is-medium">Withdraw</span>
+                        </div>
+                        <p>Availabe Balance <span id="accountBalanceWithdraw">0.00</span> ETH</p>
+                        <p>Wallet Balance <span id="walletBalanceWithdraw">0.00</span> ETH</p>
+                        <br>
+                        <div class="field has-addons has-addons-centered">
+                            <div class="control">
+                                <input id="withdrawInput" class="input is-dark is-medium" placeholder="Amount To Withdraw">
+                            </div>
+                            <div class="control">
+                                <span onclick="withdraw();" id="withdrawButton" class="button is-dark is-medium">Withdraw</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="modal-close is-large" aria-label="close" onclick="toggleModal(2);"></button>
+            </div>
+
+
+
+            <!-- Hero footer: will stick at the bottom -->
+            <div class="hero-foot">
+                <nav class="tabs is-boxed is-fullwidth">
+                    <div class="container">
+                        <ul>
+                            <li><a href="../index.html">MinimalDice</a></li>
+                            <li class="is-active"><a>Ropsten Version</a></li>
+                            <li><a>More Soon!</a></li>
+                            <li><a href="https://neverdie.com/" target="_blank">Neverdie.com</a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </section>
+
+        <script type="text/javascript">
+            function toggleCard() {
+                var element = document.getElementById("cardDiv");
+                element.classList.toggle("toggle");
+            }
+
+            function toggleModal(modal) {
+                var deposit = document.getElementById("depositModal");
+                var withdraw = document.getElementById("withdrawModal");
+                if (modal == 1) {
+                    deposit.classList.toggle("is-active");
+                    withdraw.className = "modal";
+                } else if (modal == 2) {
+                    withdraw.classList.toggle("is-active");
+                    deposit.className = "modal";
+                }
+            }
+
+        </script>
+
+        <script>
+            /* Front End Element Variables */
+            var walletAddress = document.getElementById("walletAddress");
+            var walletBalance = document.getElementById("walletBalance");
+            var accountBalance = document.getElementById("accountBalance");
+            var accountBalancePlay = document.getElementById("accountBalancePlay");
+            var withdrawInput = document.getElementById("withdrawInput");
+            var depositInput = document.getElementById("depositInput");
+            var betInput = document.getElementById("betInput");
+            var betButton = document.getElementById("betButton");
+            var notificationBox = document.getElementById("notification-box");
+
+            var contract = web3.eth.contract([
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "withdraw",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "bet",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "poolReimbursementPercentage",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "collectedFees",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "returnPercentage",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "extractEth",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "collectFees",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "deposit",
+		"outputs": [],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "balance",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"name": "_returnPercentage",
+				"type": "uint256"
+			},
+			{
+				"name": "_poolReimbursementPercentage",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "win",
+				"type": "bool"
+			},
+			{
+				"indexed": false,
+				"name": "betAddress",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "betResult",
+		"type": "event"
+	}
+]).at("0x1bb8f7f275d44de0dce321a2bd73246adf0440b6");
+
+            var betResult = contract.betResult();
+
+            function loadAccount() {
+                walletAddress.innerHTML = web3.eth.coinbase;
+                web3.eth.getBalance(web3.eth.coinbase,function (error, result) {
+                    if (!error) {
+                        walletBalance.innerHTML = web3.fromWei(result, 'ether');
+                        walletBalanceWithdraw.innerHTML = web3.fromWei(result, 'ether');
+                        walletBalanceDeposit.innerHTML = web3.fromWei(result, 'ether');
+                    };
+                });
+                contract.balance(web3.eth.coinbase, function (error, result) {
+                    if (!error) {
+                        accountBalance.innerHTML = web3.fromWei(result, 'ether');
+                        accountBalancePlay.innerHTML = web3.fromWei(result, 'ether');
+                        accountBalanceDeposit.innerHTML = web3.fromWei(result, 'ether');
+                        accountBalanceWithdraw.innerHTML = web3.fromWei(result, 'ether');
+                    } else {
+                        createNotification("warning",error);
+                    };
+                });
+            }
+
+
+
+            window.addEventListener("load", function() {
+                console.log("Page Loaded");
+                loadAccount();
+            }, false);
+
+            function deposit() {
+                amount = depositInput.value * 1000000000000000000;
+                contract.deposit({'value': amount }, function (err, result) {
+                    if (err) {
+                        createNotification("warning",'An error occured'+ err);
+                        loadAccount();
+                        depositInput.value = null;
+                    } else {
+                        createNotification("info", "After one confirmation " + amount / 1000000000000000000 +
+                                           " ether will be added to your account.");
+                        loadAccount();
+                        depositInput.value = null;
+                    };
+                });
+            };
+
+            function withdraw() {
+                amount = withdrawInput.value * 1000000000000000000;
+                contract.withdraw(amount, function (err, result) {
+                    if (err) {
+                        createNotification("warning",'An error occured' + err);
+                        loadAccount();
+                        withdrawInput.value = null;
+                    } else {
+                        createNotification("success", 'You have successfully withdrawn ' + amount / 1000000000000000000 +
+                                           ' ether to your wallet.');
+                        loadAccount();
+                        withdrawInput.value = null;
+                    };
+                });
+            };
+
+            function bet() {
+                amount = betInput.value * 1000000000000000000;
+                contract.bet(amount, function (err, result) {
+                    if (err) {
+                        createNotification("warning",'An error occured' + err);
+                        betInput.value = null;
+                    } else {
+                        createNotification("info",'You bet ' + amount / 1000000000000000000 + ' ether, good luck!');
+                        betButton.className = "button is-dark is-medium is-loading";
+                    };
+                });
+            };
+
+            function createNotification(type, message) {
+                if (type == "info") {
+                    notificationBox.innerHTML = "<div class='notification is-info'>" + message + "</div>";
+                } else if (type == "success") {
+                    notificationBox.innerHTML = "<div class='notification is-success'>" + message + "</div>";
+                } else if (type == "warning") {
+                    notificationBox.innerHTML = "<div class='notification is-danger'>" + message + "</div>";
+                };
+            }
+
+            betResult.watch(function(error, result) {
+                if (!error) {
+                    if (result.args.betAddress == web3.eth.coinbase && result.args.win == true) {
+                        createNotification("success","You won " + result.args.amount / 1000000000000000000 + " ether!");
+                        loadAccount();
+                        betButton.className = "button is-dark is-medium";
+                    } else if (result.args.betAddress == web3.eth.coinbase && result.args.win == false) {
+                        createNotification("warning","Sorry, you lossed " + result.args.amount / 1000000000000000000 + " ether. Better luck next time.");
+                        loadAccount();
+                        betButton.className = "button is-dark is-medium";
+                    }
+                } else {
+                    console.log(error);
+                }
+            });
+
+        </script>
+    </body>
+</html>
